@@ -1,4 +1,4 @@
-## Pretzel
+﻿## Pretzel
 
 A simple, pluggable site generation tool for .NET developers and Windows users (with Mono support planned I think)
 
@@ -19,6 +19,7 @@ If the site should be at a specific folder, this can be specified as a parameter
 To scan the current directory for a website and detect the content to process, run:
 
     pretzel bake 
+
 
 To scan a specific folder and parse the contents, run:
 
