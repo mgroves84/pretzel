@@ -20,7 +20,6 @@ To scan the current directory for a website and detect the content to process, r
 
     pretzel bake 
 
-
 To scan a specific folder and parse the contents, run:
 
     pretzel bake C:\path\to\folder
