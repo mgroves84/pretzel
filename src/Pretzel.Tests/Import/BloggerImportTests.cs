@@ -79,7 +79,7 @@ namespace Pretzel.Tests.Import
             var bloggerImporter = new BloggerImport(fileSystem, BaseSite, ImportFile);
             bloggerImporter.Import();
 
-            string expectedPost = @"_posts\2000-09-07-Hello-World-1.md";
+            string expectedPost = @"_posts\2000-09-06-Hello-World-1.md";
             Assert.True(fileSystem.File.Exists(BaseSite + expectedPost));
 
             var postContent = fileSystem.File.ReadAllText(BaseSite + expectedPost);

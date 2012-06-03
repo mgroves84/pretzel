@@ -112,6 +112,48 @@ This is a test of YAML parsing
                 Assert.Equal("alsotest", tags[1]);
                 Assert.Equal("lasttest", tags[2]);
             }
+
+            [Fact]
+            public void YamlHeader_WithSampleData_CustomType()
+            {
+                const string header = @"---
+                        layout: post
+                        title: This is a test jekyll document
+                        description: TEST ALL THE THINGS
+                        date: 2012-01-30
+                        tags : 
+                        - test
+                        - alsotest
+                        - lasttest
+                        lens: 
+                           prime: true
+                        ---
+            
+                        ##Test
+            
+                        This is a test of YAML parsing";
+
+                var result = header.YamlHeader();
+
+                Assert.Equal("post", result["layout"].ToString());
+                Assert.Equal("This is a test jekyll document", result["title"].ToString());
+                Assert.Equal("2012-01-30", result["date"].ToString());
+                Assert.Equal("TEST ALL THE THINGS", result["description"].ToString());
+
+                var tags = result["tags"] as IList<string>;
+                Assert.Equal(3, tags.Count);
+                Assert.Equal("test", tags[0]);
+                Assert.Equal("alsotest", tags[1]);
+                Assert.Equal("lasttest", tags[2]);
+                var lens = result["lens"] as IDictionary<string,string>;
+
+                string isprime;
+                lens.TryGetValue("prime", out isprime);
+                Assert.Equal("true", isprime);
+
+
+            }
         }
     }
+          
 }

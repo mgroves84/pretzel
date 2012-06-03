@@ -48,7 +48,7 @@ namespace Pretzel.Logic.Templating.Context
                     Posts = new List<Page>(),
                     Pages = new List<Page>(),
                     Config = config,
-                    Time = DateTime.Now,
+                    Time = DateTime.Now
                 };
 
                 context.Posts = BuildPosts(config, context).OrderByDescending(p => p.Date).ToList();
