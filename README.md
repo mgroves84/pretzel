@@ -1,8 +1,9 @@
-## Pretzel
+﻿## Pretzel
 
 A simple, pluggable site generation tool for .NET developers and Windows users (with Mono support planned I think)
 
-### Usage
+### Usage 
+
 
 We are working on a number of features for the initial release of Pretzel, which are represented by the commands **create**, **bake** and **taste**. 
 
