@@ -17,5 +17,13 @@ namespace Pretzel.Logic.Templating.Jekyll.Extensions
             p.Add("Content", page.Content);
             return p;
         }
+
+        public static Hash ToHash(this Category category)
+        {
+            var c = Hash.FromAnonymousObject(category);
+
+            return c;
+
+        }
     }
 }

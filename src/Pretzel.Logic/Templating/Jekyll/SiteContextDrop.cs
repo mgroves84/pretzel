@@ -26,10 +26,34 @@ namespace Pretzel.Logic.Templating.Jekyll.Liquid
 
         public Hash Categories
         {
-            get { return Hash.FromDictionary(
-                context.Categories.ToDictionary(c => c.Name, c => (object)c.Posts.Select(p => p.ToHash()) ));
+            get
+            {
+                return Hash.FromDictionary(
+                    context.Categories.ToDictionary(c => c.Name, c => (object)c.Posts.Select(p => p.ToHash())));
             }
         }
+
+        //public Hash Categories
+        //{
+        //    get
+        //    {
+
+        //        var y = Hash.FromAnonymousObject(new
+        //                                             {
+        //                                                 name = context.Categories.Select(c => c.Name),
+        //                                                 posts = context.Categories.Select(c => c.Posts.Select(p=>p.ToHash()))
+        //                                             });
+        //        //var x = Hash.FromDictionary(context.Categories.ToDictionary(c => c.Name,
+        //        //                                        c => (object)c.Posts.Select(p => p.ToHash())));
+        //        var x = Hash.FromDictionary(context.Categories.ToDictionary(c => c.Name, c => (object)Hash.FromAnonymousObject(new
+        //                                                                                                                   {
+        //                                                                                                                       name = c.Name,
+        //                                                                                                                       posts = c.Posts.Select(p=>p.ToHash())
+        //                                                                                                                   }) ));
+                
+        //        return x;
+        //    }
+        //}
 
         public string Title
         {

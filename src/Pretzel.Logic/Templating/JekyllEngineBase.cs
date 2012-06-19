@@ -32,8 +32,10 @@ namespace Pretzel.Logic.Templating
             for (int index = 0; index < siteContext.Posts.Count; index++)
             {
                 var p = siteContext.Posts[index];
-                var previous = GetPrevious(siteContext.Posts, index);
-                var next = GetNext(siteContext.Posts, index);
+                //var previous = GetPrevious(siteContext.Posts, index);
+                //var next = GetNext(siteContext.Posts, index);
+                var next = GetNextWithinCat(siteContext.Posts, index);
+                var previous = GetPreviousWithinCat(siteContext.Posts, index);
                 ProcessFile(outputDirectory, p, previous, next, p.Filepath);
             }
 
@@ -51,9 +53,40 @@ namespace Pretzel.Logic.Templating
             return index < pages.Count - 1 ? pages[index + 1] : null;
         }
 
+        private static Page GetNextWithinCat(IList<Page> pages, int index)
+        {
+            var currentPage = pages[index];
+            Page previousPage = null;
+            if (currentPage.Categories.Any())
+            {
+                previousPage = currentPage.DirectoryPages
+                    .Where(e => e.Categories.Contains(currentPage.Categories.First()))
+                    .OrderByDescending(x => x.Date)
+                    .FirstOrDefault(x => x.Date > pages[index].Date);
+            }
+            return previousPage;
+        }
+
+
+
         private static Page GetPrevious(IList<Page> pages, int index)
         {
             return index >= 1 ? pages[index - 1] : null;
+        }
+
+        private static Page GetPreviousWithinCat(IList<Page> pages, int index)
+        {
+            var currentPage = pages[index];
+            Page nextPage = null;
+            if (currentPage.Categories.Any())
+            {
+                nextPage = currentPage.DirectoryPages
+                    .Where(e => e.Categories.Contains(currentPage.Categories.First()))
+                    .OrderByDescending(x => x.Date)
+                    .FirstOrDefault(x => x.Date < pages[index].Date);
+            }
+            return nextPage;
+
         }
 
         public virtual string GetOutputDirectory(string path)
@@ -145,6 +178,7 @@ namespace Pretzel.Logic.Templating
                     }
                 }
 
+                // Need to have the data within the context correct by this point
                 try
                 {
                     context.Content = RenderTemplate(context.Content, context);
@@ -156,12 +190,17 @@ namespace Pretzel.Logic.Templating
                                       context.OutputPath), ex);
                 }
 
-                CreateOutputDirectory(context.OutputPath);
-                FileSystem.File.WriteAllText(context.OutputPath, context.Content);
+                WriteFiles(context);
             }
         }
 
-		  private void CreateOutputDirectory(string outputFile)
+        private void WriteFiles(PageContext context)
+        {
+            CreateOutputDirectory(context.OutputPath);
+            FileSystem.File.WriteAllText(context.OutputPath, context.Content);
+        }
+
+        private void CreateOutputDirectory(string outputFile)
 		  {
 			  var directory = Path.GetDirectoryName(outputFile);
 			  if (!FileSystem.Directory.Exists(directory))
