@@ -37,6 +37,15 @@ namespace Pretzel.Logic.Templating.Jekyll
             {
                 y.Add("title", Context.Title);
             }
+            
+            if(pageContext.Previous != null && typeof(Pretzel.Logic.Templating.Context.Page) == pageContext.Previous.GetType())
+            {
+                y.Add("previous", Hash.FromAnonymousObject(pageContext.Previous));
+            }
+            if(pageContext.Next != null && typeof(Pretzel.Logic.Templating.Context.Page) == pageContext.Next.GetType())
+            {
+                y.Add("next", Hash.FromAnonymousObject(pageContext.Next));
+            }
 
             var x = Hash.FromAnonymousObject(new
             {
