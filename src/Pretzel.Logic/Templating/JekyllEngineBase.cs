@@ -56,15 +56,15 @@ namespace Pretzel.Logic.Templating
         private static Page GetNextWithinCat(IList<Page> pages, int index)
         {
             var currentPage = pages[index];
-            Page previousPage = null;
+            Page nextPage = null;
             if (currentPage.Categories.Any())
             {
-                previousPage = currentPage.DirectoryPages
+                nextPage = currentPage.DirectoryPages
                     .Where(e => e.Categories.Contains(currentPage.Categories.First()))
-                    .OrderByDescending(x => x.Date)
+                    .OrderBy(x => x.Date)
                     .FirstOrDefault(x => x.Date > pages[index].Date);
             }
-            return previousPage;
+            return nextPage;
         }
 
 
@@ -77,15 +77,15 @@ namespace Pretzel.Logic.Templating
         private static Page GetPreviousWithinCat(IList<Page> pages, int index)
         {
             var currentPage = pages[index];
-            Page nextPage = null;
+            Page previousPage = null;
             if (currentPage.Categories.Any())
             {
-                nextPage = currentPage.DirectoryPages
+                previousPage = currentPage.DirectoryPages
                     .Where(e => e.Categories.Contains(currentPage.Categories.First()))
                     .OrderByDescending(x => x.Date)
                     .FirstOrDefault(x => x.Date < pages[index].Date);
             }
-            return nextPage;
+            return previousPage;
 
         }
 
