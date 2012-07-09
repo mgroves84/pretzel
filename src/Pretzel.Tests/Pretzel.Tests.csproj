@@ -34,7 +34,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="dotless.Core, Version=1.2.2.0, Culture=neutral, PublicKeyToken=96b446c9e63eae34, processorArchitecture=MSIL" />
-    <Reference Include="DotLiquid, Version=1.6.1.0, Culture=neutral, PublicKeyToken=82e46016ecf9f07c, processorArchitecture=MSIL" />
+    <Reference Include="DotLiquid, Version=1.6.1.0, Culture=neutral, PublicKeyToken=82e46016ecf9f07c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\DotLiquid.dll</HintPath>
+    </Reference>
     <Reference Include="NDesk.Options, Version=0.2.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NDesk.Options.0.2.1\lib\NDesk.Options.dll</HintPath>
