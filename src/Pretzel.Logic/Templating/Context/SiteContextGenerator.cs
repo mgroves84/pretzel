@@ -179,7 +179,7 @@ namespace Pretzel.Logic.Templating.Context
                                     Title = header.ContainsKey("title") ? header["title"].ToString() : "this is a post",
                                     Date = header.ContainsKey("date") ? DateTime.Parse(header["date"].ToString()) : file.Datestamp(),
                                     Content = RenderContent(file, contents, header),
-                                    Filepath = GetPathWithTimestamp(context.OutputFolder, file),
+                                    Filepath = GetPathWithTimestamp(file),
                                     File = file,
                                     Bag = header,
                                 };
@@ -334,7 +334,7 @@ namespace Pretzel.Logic.Templating.Context
             return file.Replace(context.SourceFolder, "").TrimStart('\\');
         }
 
-        private string GetPathWithTimestamp(string outputDirectory, string file)
+        private string GetPathWithTimestamp(string file)
         {
             // TODO: detect mode from site config
             var fileName = file.Substring(file.LastIndexOf("\\"));
@@ -342,7 +342,7 @@ namespace Pretzel.Logic.Templating.Context
             var tokens = fileName.Split('-');
             var timestamp = string.Join("\\", tokens.Take(3)).Trim('\\');
             var title = string.Join("-", tokens.Skip(3));
-            return Path.Combine(outputDirectory, timestamp, title);
+            return Path.Combine(timestamp, title);
         }
 
         static readonly Regex TimestampAndTitleFromPathRegex = new Regex(@"\\(?:(?<timestamp>\d+-\d+-\d+)-)?(?<title>[^\\]*)\.[^\.]+$");
