@@ -168,20 +168,29 @@ namespace Pretzel.Logic.Templating.Context
                     return pageCache[file];
                 var contents = SafeReadContents(file);
                 var header = contents.YamlHeader();
+
+                if (header.ContainsKey("published") && header["published"].ToString().ToLower() == "false")
+                {
+                    return null;
+                }
+
                 var page = new Page
-                                {
-                                    Title = header.ContainsKey("title") ? header["title"].ToString() : "this is a post",
-                                    Date = header.ContainsKey("date") ? DateTime.Parse(header["date"].ToString()) : file.Datestamp(),
-                                    Content = RenderContent(file, contents, header),
-                                    Filepath = GetPathWithTimestamp(context.OutputFolder, file),
-                                    File = file,
-                                    Bag = header,
-                                };
+                {
+                    Title = header.ContainsKey("title") ? header["title"].ToString() : "this is a post",
+                    Date = header.ContainsKey("date") ? DateTime.Parse(header["date"].ToString()) : file.Datestamp(),
+                    Content = RenderContent(file, contents, header),
+                    Filepath = GetPathWithTimestamp(context.OutputFolder, file),
+                    File = file,
+                    Bag = header,
+                };
 
                 if (header.ContainsKey("permalink"))
                     page.Url = EvaluatePermalink(header["permalink"].ToString(), page);
                 else if (config.ContainsKey("permalink"))
+                {
                     page.Url = EvaluatePermalink(config["permalink"].ToString(), page);
+                    page.Bag.Add("permalink", config["permalink"].ToString());
+                }
 
                 // The GetDirectoryPage method is reentrant, we need a cache to stop a stack overflow :)
                 pageCache.Add(file, page);
@@ -206,7 +215,6 @@ namespace Pretzel.Logic.Templating.Context
 
             return null;
         }
-
         private IEnumerable<Page> GetDirectoryPages(SiteContext context, IDictionary<string, object> config, string forDirectory, bool isPost)
         {
             return fileSystem
