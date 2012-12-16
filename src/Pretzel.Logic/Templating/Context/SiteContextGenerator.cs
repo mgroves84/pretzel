@@ -180,8 +180,15 @@ namespace Pretzel.Logic.Templating.Context
 
                 if (header.ContainsKey("permalink"))
                     page.Url = EvaluatePermalink(header["permalink"].ToString(), page);
-                else if (config.ContainsKey("permalink"))
-                    page.Url = EvaluatePermalink(config["permalink"].ToString(), page);
+                else if (config.ContainsKey("permalink") && header.ContainsKey("layout"))
+                {
+                    if (header["layout"].ToString() != "layout")
+                    {
+                        page.Url = EvaluatePermalink(config["permalink"].ToString(), page);
+                        page.Bag.Add("permalink", config["permalink"].ToString());
+                    }
+                }
+
 
                 // The GetDirectoryPage method is reentrant, we need a cache to stop a stack overflow :)
                 pageCache.Add(file, page);
