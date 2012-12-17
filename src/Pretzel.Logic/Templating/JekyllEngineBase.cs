@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using Pretzel.Logic.Exceptions;
+using Pretzel.Logic.Extensibility;
 using Pretzel.Logic.Extensions;
 using Pretzel.Logic.Templating.Context;
 
@@ -17,6 +18,9 @@ namespace Pretzel.Logic.Templating
 #pragma warning disable 0649
         [Import] public IFileSystem FileSystem { get; set; }
 #pragma warning restore 0649
+
+        [ImportMany]
+        public IEnumerable<IFilter> Filters { get; set; }
 
         public abstract void Initialize();
         protected abstract void PreProcess();
@@ -105,14 +109,14 @@ namespace Pretzel.Logic.Templating
             if (extension.IsImageFormat())
             {
                 CreateOutputDirectory(page.OutputFile);
-                FileSystem.File.Copy(page.File, page.OutputFile, true);
+                CopyFileIfSourceNewer(page.File, page.OutputFile, true);
                 return;
             }
 
             if (page is NonProcessedPage)
             {
                 CreateOutputDirectory(page.OutputFile);
-                FileSystem.File.Copy(page.File, page.OutputFile, true);
+                CopyFileIfSourceNewer(page.File, page.OutputFile, true);
                 return;
             }
 
@@ -190,22 +194,26 @@ namespace Pretzel.Logic.Templating
                                       context.OutputPath), ex);
                 }
 
-                WriteFiles(context);
+                CreateOutputDirectory(context.OutputPath);
+                FileSystem.File.WriteAllText(context.OutputPath, context.Content);
             }
         }
 
-        private void WriteFiles(PageContext context)
+        public void CopyFileIfSourceNewer(string sourceFileName, string destFileName, bool overwrite)
         {
-            CreateOutputDirectory(context.OutputPath);
-            FileSystem.File.WriteAllText(context.OutputPath, context.Content);
+            if (!FileSystem.File.Exists(destFileName) ||
+                FileSystem.File.GetLastWriteTime(sourceFileName) > FileSystem.File.GetLastWriteTime(destFileName))
+            {
+                FileSystem.File.Copy(sourceFileName, destFileName, overwrite);
+            }
         }
 
         private void CreateOutputDirectory(string outputFile)
-		  {
-			  var directory = Path.GetDirectoryName(outputFile);
-			  if (!FileSystem.Directory.Exists(directory))
-				  FileSystem.Directory.CreateDirectory(directory);
-		  }
+        {
+            var directory = Path.GetDirectoryName(outputFile);
+            if (!FileSystem.Directory.Exists(directory))
+                FileSystem.Directory.CreateDirectory(directory);
+        }
 
     	protected virtual string LayoutExtension
         {

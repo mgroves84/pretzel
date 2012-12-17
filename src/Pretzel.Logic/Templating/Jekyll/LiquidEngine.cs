@@ -20,6 +20,13 @@ namespace Pretzel.Logic.Templating.Jekyll
         protected override void PreProcess()
         {
             contextDrop = new SiteContextDrop(Context);
+            if (Filters != null)
+            {
+                foreach (var filter in Filters)
+                {
+                    Template.RegisterFilter(filter.GetType());
+                }
+            }
         }
 
         Hash CreatePageData(PageContext pageContext)
@@ -38,13 +45,15 @@ namespace Pretzel.Logic.Templating.Jekyll
                 y.Add("title", Context.Title);
             }
             
-            if(pageContext.Previous != null && typeof(Pretzel.Logic.Templating.Context.Page) == pageContext.Previous.GetType())
+            if(pageContext.Previous != null && pageContext.Previous is Pretzel.Logic.Templating.Context.Page)
             {
-                y.Add("previous", Hash.FromAnonymousObject(pageContext.Previous));
+                //y.Add("previous", Hash.FromAnonymousObject(pageContext.Previous));
+                y.Add("previous", pageContext.Previous);
             }
-            if(pageContext.Next != null && typeof(Pretzel.Logic.Templating.Context.Page) == pageContext.Next.GetType())
+            if(pageContext.Next != null && pageContext.Next is Pretzel.Logic.Templating.Context.Page)
             {
-                y.Add("next", Hash.FromAnonymousObject(pageContext.Next));
+                //y.Add("next", Hash.FromAnonymousObject(pageContext.Next));
+                y.Add("next", pageContext.Next);
             }
 
             var x = Hash.FromAnonymousObject(new
